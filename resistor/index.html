@@ -8,42 +8,95 @@
  
 <style>
 :root {
-  --bg:#f4f6ff; --card:#fff; --text:#000; --accent:#667eea;
+  --bg:#f4f6ff;
+  --card:#ffffff;
+  --text:#000000;
+  --accent:#667eea;
 }
+ 
+body.dark {
+  --bg:#121212;
+  --card:#1e1e1e;
+  --text:#ffffff;
+}
+ 
 body {
-  margin:0; min-height:100vh;
+  margin:0;
+  min-height:100vh;
   font-family:system-ui,sans-serif;
   background:var(--bg);
-  display:flex; justify-content:center; align-items:center;
+  color:var(--text);
+ 
+  /* MOBILE FIX */
+  padding:16px;
+ 
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-sizing:border-box;
 }
+ 
 .container {
   background:var(--card);
-  max-width:420px; width:100%;
+  width:100%;
+  max-width:420px;
   padding:24px;
   border-radius:16px;
   box-shadow:0 20px 40px rgba(0,0,0,.25);
+  box-sizing:border-box;
 }
-h1 {margin:0 0 10px; font-size:20px;}
-label {font-weight:600; margin-top:14px; display:block;}
+ 
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+ 
+h1 {
+  margin:0;
+  font-size:20px;
+}
+ 
+.toggle {
+  cursor:pointer;
+  font-size:14px;
+  color:var(--accent);
+}
+ 
+label {
+  font-weight:600;
+  margin-top:14px;
+  display:block;
+}
+ 
 textarea, select {
-  width:100%; padding:12px; margin-top:6px;
-  border-radius:8px; border:1px solid #ccc;
+  width:100%;
+  padding:12px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
   font-size:15px;
+  box-sizing:border-box;
 }
+ 
+button {
+  width:100%;
+  margin-top:16px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:var(--accent);
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+ 
 .result {
   margin-top:18px;
-  background:#eef1ff;
+  background:rgba(102,126,234,0.12);
   padding:14px;
   border-radius:10px;
   font-size:16px;
-}
-button {
-  width:100%; margin-top:14px;
-  padding:10px;
-  border:none; border-radius:8px;
-  background:var(--accent);
-  color:white; font-size:15px;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -51,7 +104,10 @@ button {
 <body>
  
 <div class="container">
-  <h1>🔴 Resistor Calculator</h1>
+  <div class="header">
+    <h1>🔴 Resistor Calculator</h1>
+    <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
+  </div>
  
   <label>Enter resistor values (Ω)</label>
   <textarea id="values" rows="3" placeholder="Example: 100, 220, 330"></textarea>
@@ -75,7 +131,11 @@ function calculate() {
     return;
   }
  
-  let arr = input.split(",").map(v => parseFloat(v.trim())).filter(v => v > 0);
+  let arr = input
+    .split(",")
+    .map(v => parseFloat(v.trim()))
+    .filter(v => v > 0);
+ 
   if (arr.length === 0) {
     document.getElementById("result").innerText = "Invalid values";
     return;
@@ -92,6 +152,10 @@ function calculate() {
  
   document.getElementById("result").innerHTML =
     `<b>Total Resistance:</b> ${total.toFixed(2)} Ω`;
+}
+ 
+function toggleMode() 
+  document.body.classList.toggle("dark");
 }
 </script>
  
