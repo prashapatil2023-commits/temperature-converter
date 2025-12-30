@@ -7,7 +7,7 @@
 <meta name="google-site-verification" content="zpVgqeCM7_ZF2J2fDcVkGCVUsicPaSboEPQuFfxuM6A" />
  
 <title>Temperature Converter | Celsius, Fahrenheit, Kelvin, Rankine</title>
-<meta name="description" content="Instant temperature converter with auto convert, individual copy, dark mode.">
+<meta name="description" content="Instant temperature converter with auto convert, per-value copy, dark mode.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <style>
@@ -16,12 +16,14 @@
   --card: #ffffff;
   --text: #000;
   --accent: #667eea;
+  --rowHover: rgba(102,126,234,0.12);
 }
  
 body.dark {
   --bg: #121212;
   --card: #1e1e1e;
   --text: #ffffff;
+  --rowHover: rgba(255,255,255,0.12);
 }
  
 body {
@@ -40,8 +42,8 @@ body {
   width: 100%;
   max-width: 420px;
   padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
 }
  
 .header {
@@ -72,22 +74,28 @@ input, select {
   padding: 12px;
   margin-top: 6px;
   font-size: 16px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #ccc;
 }
  
 .result {
   margin-top: 18px;
-  background: rgba(102,126,234,0.1);
+  background: rgba(102,126,234,0.08);
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 14px;
 }
  
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+ 
+.row:hover {
+  background: var(--rowHover);
 }
  
 .value {
@@ -98,15 +106,31 @@ input, select {
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
+  opacity: 0.4;
 }
  
-.tooltip {
-  text-align: center;
+.row:hover .copy-btn {
+  opacity: 1;
+}
+ 
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
   font-size: 13px;
-  color: green;
-  margin-top: 8px;
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.toast.show {
+  opacity: 1;
 }
 </style>
 </head>
@@ -133,9 +157,9 @@ input, select {
   <div class="result" id="result">
     Start typing to see conversion
   </div>
- 
-  <div class="tooltip" id="tooltip">Copied!</div>
 </div>
+ 
+<div class="toast" id="toast">Copied</div>
  
 <script>
 function convert() {
@@ -156,31 +180,31 @@ function convert() {
   else {r=t;k=r*5/9;c=k-273.15;f=c*9/5+32;}
  
   document.getElementById("result").innerHTML = `
-    <div class="row">
-      <div class="value" onclick="copyText('${c.toFixed(2)} °C')">Celsius: <b>${c.toFixed(2)} °C</b></div>
-      <button class="copy-btn" onclick="copyText('${c.toFixed(2)} °C')">📋</button>
-    </div>
-    <div class="row">
-      <div class="value" onclick="copyText('${f.toFixed(2)} °F')">Fahrenheit: <b>${f.toFixed(2)} °F</b></div>
-      <button class="copy-btn" onclick="copyText('${f.toFixed(2)} °F')">📋</button>
-    </div>
-    <div class="row">
-      <div class="value" onclick="copyText('${k.toFixed(2)} K')">Kelvin: <b>${k.toFixed(2)} K</b></div>
-      <button class="copy-btn" onclick="copyText('${k.toFixed(2)} K')">📋</button>
-    </div>
-    <div class="row">
-      <div class="value" onclick="copyText('${r.toFixed(2)} °R')">Rankine: <b>${r.toFixed(2)} °R</b></div>
-      <button class="copy-btn" onclick="copyText('${r.toFixed(2)} °R')">📋</button>
-    </div>
+    ${row("Celsius", c.toFixed(2)+" °C")}
+    ${row("Fahrenheit", f.toFixed(2)+" °F")}
+    ${row("Kelvin", k.toFixed(2)+" K")}
+    ${row("Rankine", r.toFixed(2)+" °R")}
   `;
 }
  
-function copyText(text) {
+function row(label, value) {
+  return `
+  <div class="row">
+    <div class="value" onclick="copyValue('${value}', this)">${label}: <b>${value}</b></div>
+    <button class="copy-btn" onclick="copyValue('${value}', this.parentElement)">📋</button>
+  </div>`;
+}
+ 
+function copyValue(text, rowEl) {
   navigator.clipboard.writeText(text);
-  let tip = document.getElementById("tooltip");
-  tip.style.display = "block";
-  tip.innerText = text + " copied";
-  setTimeout(() => tip.style.display = "none", 1200);
+ 
+  rowEl.style.background = "var(--rowHover)";
+  setTimeout(()=>rowEl.style.background="",600);
+ 
+  let toast = document.getElementById("toast");
+  toast.innerText = text + " copied";
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),1200);
 }
  
 function toggleMode() {
@@ -190,4 +214,6 @@ function toggleMode() {
  
 </body>
 </html>
+Top 10 nhà cái uy tín Việt Nam - Đăng ký chính chủ +100K
+Top 10 nhà cái uy tín nhất tại Việt Nam: Vsbet, 6686, FB88, 188bet, fun88, w88, hi88, bk8, thabet, 1xbet, go88... Tham gia nhà cái tặng tiền thưởng 100K đăng.
  
