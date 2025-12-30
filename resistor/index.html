@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Resistor Calculator | Series & Parallel</title>
+<meta name="description" content="Calculate total resistance for resistors in series or parallel.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<style>
+:root {
+  --bg:#f4f6ff; --card:#fff; --text:#000; --accent:#667eea;
+}
+body {
+  margin:0; min-height:100vh;
+  font-family:system-ui,sans-serif;
+  background:var(--bg);
+  display:flex; justify-content:center; align-items:center;
+}
+.container {
+  background:var(--card);
+  max-width:420px; width:100%;
+  padding:24px;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+}
+h1 {margin:0 0 10px; font-size:20px;}
+label {font-weight:600; margin-top:14px; display:block;}
+textarea, select {
+  width:100%; padding:12px; margin-top:6px;
+  border-radius:8px; border:1px solid #ccc;
+  font-size:15px;
+}
+.result {
+  margin-top:18px;
+  background:#eef1ff;
+  padding:14px;
+  border-radius:10px;
+  font-size:16px;
+}
+button {
+  width:100%; margin-top:14px;
+  padding:10px;
+  border:none; border-radius:8px;
+  background:var(--accent);
+  color:white; font-size:15px;
+  cursor:pointer;
+}
+</style>
+</head>
+ 
+<body>
+ 
+<div class="container">
+  <h1>🔴 Resistor Calculator</h1>
+ 
+  <label>Enter resistor values (Ω)</label>
+  <textarea id="values" rows="3" placeholder="Example: 100, 220, 330"></textarea>
+ 
+  <label>Connection type</label>
+  <select id="type" onchange="calculate()">
+    <option value="series">Series</option>
+    <option value="parallel">Parallel</option>
+  </select>
+ 
+  <button onclick="calculate()">Calculate</button>
+ 
+  <div class="result" id="result">Enter values to calculate</div>
+</div>
+ 
+<script>
+function calculate() {
+  let input = document.getElementById("values").value;
+  if (!input) {
+    document.getElementById("result").innerText = "Enter resistor values";
+    return;
+  }
+ 
+  let arr = input.split(",").map(v => parseFloat(v.trim())).filter(v => v > 0);
+  if (arr.length === 0) {
+    document.getElementById("result").innerText = "Invalid values";
+    return;
+  }
+ 
+  let type = document.getElementById("type").value;
+  let total = 0;
+ 
+  if (type === "series") {
+    total = arr.reduce((a,b) => a + b, 0);
+  } else {
+    total = 1 / arr.reduce((a,b) => a + (1/b), 0);
+  }
+ 
+  document.getElementById("result").innerHTML =
+    `<b>Total Resistance:</b> ${total.toFixed(2)} Ω`;
+}
+</script>
+ 
+</body>
+</html>
