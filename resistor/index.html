@@ -3,100 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <title>Resistor Calculator | Series & Parallel</title>
+ 
 <meta name="description" content="Calculate total resistance for resistors in series or parallel.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <style>
 :root {
-  --bg:#f4f6ff;
-  --card:#ffffff;
-  --text:#000000;
-  --accent:#667eea;
+  --bg: #f4f6ff;
+  --card: #ffffff;
+  --text: #000000;
+  --accent: #667eea;
 }
  
 body.dark {
-  --bg:#121212;
-  --card:#1e1e1e;
-  --text:#ffffff;
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #ffffff;
+}
+ 
+* {
+  box-sizing: border-box;
 }
  
 body {
-  margin:0;
-  min-height:100vh;
-  font-family:system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+  margin: 0;
+  min-height: 100vh;
+  padding: 16px;           /* MOBILE FIX */
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
  
-  /* MOBILE FIX */
-  padding:16px;
- 
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  box-sizing:border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
  
 .container {
-  background:var(--card);
-  width:100%;
-  max-width:420px;
-  padding:24px;
-  border-radius:16px;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
-  box-sizing:border-box;
+  background: var(--card);
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
  
 .header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
  
 h1 {
-  margin:0;
-  font-size:20px;
+  margin: 0;
+  font-size: 20px;
 }
  
 .toggle {
-  cursor:pointer;
-  font-size:14px;
-  color:var(--accent);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--accent);
 }
  
 label {
-  font-weight:600;
-  margin-top:14px;
-  display:block;
+  display: block;
+  margin-top: 16px;
+  font-weight: 600;
 }
  
-textarea, select {
-  width:100%;
-  padding:12px;
-  margin-top:6px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:15px;
-  box-sizing:border-box;
+textarea,
+select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
  
 button {
-  width:100%;
-  margin-top:16px;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:var(--accent);
-  color:white;
-  font-size:16px;
-  cursor:pointer;
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
 }
  
 .result {
-  margin-top:18px;
-  background:rgba(102,126,234,0.12);
-  padding:14px;
-  border-radius:10px;
-  font-size:16px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(102,126,234,0.15);
+  font-size: 16px;
 }
 </style>
 </head>
@@ -113,51 +114,58 @@ button {
   <textarea id="values" rows="3" placeholder="Example: 100, 220, 330"></textarea>
  
   <label>Connection type</label>
-  <select id="type" onchange="calculate()">
+  <select id="type">
     <option value="series">Series</option>
     <option value="parallel">Parallel</option>
   </select>
  
   <button onclick="calculate()">Calculate</button>
  
-  <div class="result" id="result">Enter values to calculate</div>
+  <div class="result" id="result">
+    Enter values and click calculate
+  </div>
 </div>
  
 <script>
 function calculate() {
-  let input = document.getElementById("values").value;
-  if (!input) {
-    document.getElementById("result").innerText = "Enter resistor values";
+  const input = document.getElementById("values").value;
+ 
+  if (!input.trim()) {
+    document.getElementById("result").innerText =
+      "Please enter resistor values";
     return;
   }
  
-  let arr = input
+  const resistors = input
     .split(",")
     .map(v => parseFloat(v.trim()))
-    .filter(v => v > 0);
+    .filter(v => !isNaN(v) && v > 0);
  
-  if (arr.length === 0) {
-    document.getElementById("result").innerText = "Invalid values";
+  if (resistors.length === 0) {
+    document.getElementById("result").innerText =
+      "Invalid resistor values";
     return;
   }
  
-  let type = document.getElementById("type").value;
+  const type = document.getElementById("type").value;
   let total = 0;
  
   if (type === "series") {
-    total = arr.reduce((a,b) => a + b, 0);
+    total = resistors.reduce((a, b) => a + b, 0);
   } else {
-    total = 1 / arr.reduce((a,b) => a + (1/b), 0);
+    let inv = resistors.reduce((a, b) => a + (1 / b), 0);
+    total = 1 / inv;
   }
  
   document.getElementById("result").innerHTML =
-    `<b>Total Resistance:</b> ${total.toFixed(2)} Ω`;
+    "<b>Total Resistance:</b> " + total.toFixed(2) + " Ω";
 }
  
-function toggleMode() 
+function toggleMode() {
   document.body.classList.toggle("dark");
 }
 </script>
  
 </body>
 </html>
+ 
