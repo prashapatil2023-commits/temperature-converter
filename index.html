@@ -143,5 +143,51 @@ function convert() {
   let u = document.getElementById("unit").value;
  
   if (t === "") {
-    document.getElementById("result").innerHTML
+    document.getElementById("result").innerHTML = "Start typing to see conversion";
+    return;
+  }
+ 
+  t = parseFloat(t);
+  let c,f,k,r;
+ 
+  if(u==="c"){c=t;f=c*9/5+32;k=c+273.15;r=(c+273.15)*9/5;}
+  else if(u==="f"){f=t;c=(f-32)*5/9;k=c+273.15;r=f+459.67;}
+  else if(u==="k"){k=t;c=k-273.15;f=c*9/5+32;r=k*9/5;}
+  else {r=t;k=r*5/9;c=k-273.15;f=c*9/5+32;}
+ 
+  document.getElementById("result").innerHTML = `
+    <div class="row">
+      <div class="value" onclick="copyText('${c.toFixed(2)} °C')">Celsius: <b>${c.toFixed(2)} °C</b></div>
+      <button class="copy-btn" onclick="copyText('${c.toFixed(2)} °C')">📋</button>
+    </div>
+    <div class="row">
+      <div class="value" onclick="copyText('${f.toFixed(2)} °F')">Fahrenheit: <b>${f.toFixed(2)} °F</b></div>
+      <button class="copy-btn" onclick="copyText('${f.toFixed(2)} °F')">📋</button>
+    </div>
+    <div class="row">
+      <div class="value" onclick="copyText('${k.toFixed(2)} K')">Kelvin: <b>${k.toFixed(2)} K</b></div>
+      <button class="copy-btn" onclick="copyText('${k.toFixed(2)} K')">📋</button>
+    </div>
+    <div class="row">
+      <div class="value" onclick="copyText('${r.toFixed(2)} °R')">Rankine: <b>${r.toFixed(2)} °R</b></div>
+      <button class="copy-btn" onclick="copyText('${r.toFixed(2)} °R')">📋</button>
+    </div>
+  `;
+}
+ 
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+  let tip = document.getElementById("tooltip");
+  tip.style.display = "block";
+  tip.innerText = text + " copied";
+  setTimeout(() => tip.style.display = "none", 1200);
+}
+ 
+function toggleMode() {
+  document.body.classList.toggle("dark");
+}
+</script>
+ 
+</body>
+</html>
  
