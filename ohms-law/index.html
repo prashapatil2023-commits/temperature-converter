@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ohm’s Law Calculator | V I R</title>
+ 
+<meta name="description" content="Ohm’s Law calculator to compute Voltage, Current or Resistance instantly.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<style>
+:root {
+  --bg:#f4f6ff;
+  --card:#ffffff;
+  --text:#000000;
+  --accent:#667eea;
+}
+ 
+body.dark {
+  --bg:#121212;
+  --card:#1e1e1e;
+  --text:#ffffff;
+}
+ 
+* {
+  box-sizing: border-box;
+}
+ 
+body {
+  margin:0;
+  min-height:100vh;
+  padding:16px;
+  font-family:system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+ 
+.container {
+  background:var(--card);
+  width:100%;
+  max-width:420px;
+  padding:24px;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.25);
+}
+ 
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+ 
+h1 {
+  margin:0;
+  font-size:20px;
+}
+ 
+.toggle {
+  cursor:pointer;
+  font-size:14px;
+  color:var(--accent);
+}
+ 
+label {
+  display:block;
+  margin-top:16px;
+  font-weight:600;
+}
+ 
+input {
+  width:100%;
+  margin-top:6px;
+  padding:12px;
+  font-size:15px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+ 
+button {
+  width:100%;
+  margin-top:18px;
+  padding:12px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+}
+ 
+.result {
+  margin-top:18px;
+  padding:14px;
+  border-radius:10px;
+  background:rgba(102,126,234,0.15);
+  font-size:16px;
+}
+</style>
+</head>
+ 
+<body>
+ 
+<div class="container">
+  <div class="header">
+    <h1>⚡ Ohm’s Law Calculator</h1>
+    <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
+  </div>
+ 
+  <label>Voltage (V)</label>
+  <input type="number" id="v" placeholder="Enter voltage">
+ 
+  <label>Current (I in A)</label>
+  <input type="number" id="i" placeholder="Enter current">
+ 
+  <label>Resistance (R in Ω)</label>
+  <input type="number" id="r" placeholder="Enter resistance">
+ 
+  <button onclick="calculate()">Calculate</button>
+ 
+  <div class="result" id="result">
+    Enter any two values
+  </div>
+</div>
+ 
+<script>
+function calculate() {
+  const V = parseFloat(document.getElementById("v").value);
+  const I = parseFloat(document.getElementById("i").value);
+  const R = parseFloat(document.getElementById("r").value);
+ 
+  let filled = [!isNaN(V), !isNaN(I), !isNaN(R)].filter(x => x).length;
+ 
+  if (filled < 2) {
+    document.getElementById("result").innerText =
+      "Please enter any two values";
+    return;
+  }
+ 
+  let resultText = "";
+ 
+  if (isNaN(V)) {
+    const voltage = I * R;
+    resultText = `Voltage (V) = ${voltage.toFixed(2)} V`;
+  }
+  else if (isNaN(I)) {
+    const current = V / R;
+    resultText = `Current (I) = ${current.toFixed(4)} A`;
+  }
+  else if (isNaN(R)) {
+    const resistance = V / I;
+    resultText = `Resistance (R) = ${resistance.toFixed(2)} Ω`;
+  }
+  else {
+    resultText = "Clear one field to calculate";
+  }
+ 
+  document.getElementById("result").innerHTML = `<b>${resultText}</b>`;
+}
+ 
+function toggleMode() {
+  document.body.classList.toggle("dark");
+}
+</script>
+ 
+</body>
+</html>
+ 
