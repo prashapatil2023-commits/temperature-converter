@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
  
+<!-- Google verification -->
 <meta name="google-site-verification" content="zpVgqeCM7_ZF2J2fDcVkGCVUsicPaSboEPQuFfxuM6A" />
  
 <title>Temperature Converter | Celsius, Fahrenheit, Kelvin, Rankine</title>
-<meta name="description" content="Instant temperature converter with auto convert, copy results, dark mode.">
+<meta name="description" content="Instant temperature converter with auto convert, individual copy, dark mode.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <style>
@@ -30,8 +31,8 @@ body {
   background: var(--bg);
   color: var(--text);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
  
 .container {
@@ -39,8 +40,8 @@ body {
   width: 100%;
   max-width: 420px;
   padding: 24px;
-  border-radius: 14px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 }
  
 .header {
@@ -51,6 +52,7 @@ body {
  
 h1 {
   font-size: 20px;
+  margin: 0;
 }
  
 .toggle {
@@ -61,7 +63,7 @@ h1 {
  
 label {
   display: block;
-  margin-top: 15px;
+  margin-top: 16px;
   font-weight: 600;
 }
  
@@ -78,23 +80,33 @@ input, select {
   margin-top: 18px;
   background: rgba(102,126,234,0.1);
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 12px;
 }
  
-.result div {
-  margin: 5px 0;
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 8px 0;
 }
  
-button {
-  margin-top: 12px;
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  font-size: 15px;
+.value {
   cursor: pointer;
+}
+ 
+.copy-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+}
+ 
+.tooltip {
+  text-align: center;
+  font-size: 13px;
+  color: green;
+  margin-top: 8px;
+  display: none;
 }
 </style>
 </head>
@@ -108,7 +120,7 @@ button {
   </div>
  
   <label>Enter value</label>
-  <input type="number" id="temp" oninput="convert()" placeholder="Enter temperature">
+  <input type="number" id="temp" placeholder="Enter temperature" oninput="convert()">
  
   <label>Select unit</label>
   <select id="unit" onchange="convert()">
@@ -118,42 +130,18 @@ button {
     <option value="r">Rankine (°R)</option>
   </select>
  
-  <div class="result" id="result">Start typing to see conversion</div>
+  <div class="result" id="result">
+    Start typing to see conversion
+  </div>
  
-  <button onclick="copyResult()">📋 Copy Result</button>
+  <div class="tooltip" id="tooltip">Copied!</div>
 </div>
  
 <script>
 function convert() {
   let t = document.getElementById("temp").value;
   let u = document.getElementById("unit").value;
-  if (t === "") return;
  
-  t = parseFloat(t);
-  let c,f,k,r;
- 
-  if(u==="c"){c=t;f=c*9/5+32;k=c+273.15;r=(c+273.15)*9/5;}
-  else if(u==="f"){f=t;c=(f-32)*5/9;k=c+273.15;r=f+459.67;}
-  else if(u==="k"){k=t;c=k-273.15;f=c*9/5+32;r=k*9/5;}
-  else {r=t;k=r*5/9;c=k-273.15;f=c*9/5+32;}
- 
-  document.getElementById("result").innerHTML =
-    `Celsius: ${c.toFixed(2)} °C<br>
-     Fahrenheit: ${f.toFixed(2)} °F<br>
-     Kelvin: ${k.toFixed(2)} K<br>
-     Rankine: ${r.toFixed(2)} °R`;
-}
- 
-function copyResult() {
-  navigator.clipboard.writeText(document.getElementById("result").innerText);
-  alert("Copied!");
-}
- 
-function toggleMode() {
-  document.body.classList.toggle("dark");
-}
-</script>
- 
-</body>
-</html>
+  if (t === "") {
+    document.getElementById("result").innerHTML
  
