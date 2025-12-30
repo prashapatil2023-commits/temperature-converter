@@ -2,38 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="google-site-verification" content="zpVgqeCM7_ZF2J2fDcVkGCVUsicPaSboEPQuFfxuM6A" />
-<title>Temperature Converter | Celsius Fahrenheit Kelvin Rankine</title>
  
-<meta name="description" content="Convert Celsius, Fahrenheit, Kelvin and Rankine instantly. Free online temperature converter.">
+<meta name="google-site-verification" content="zpVgqeCM7_ZF2J2fDcVkGCVUsicPaSboEPQuFfxuM6A" />
+ 
+<title>Temperature Converter | Celsius, Fahrenheit, Kelvin, Rankine</title>
+<meta name="description" content="Instant temperature converter with auto convert, copy results, dark mode.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <style>
+:root {
+  --bg: #f4f6ff;
+  --card: #ffffff;
+  --text: #000;
+  --accent: #667eea;
+}
+ 
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #ffffff;
+}
+ 
 body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    padding: 20px;
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+ 
 .container {
-    max-width: 400px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin: auto;
+  background: var(--card);
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
 }
+ 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
 h1 {
-    text-align: center;
+  font-size: 20px;
 }
-input, select, button {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
+ 
+.toggle {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--accent);
 }
+ 
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+}
+ 
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+ 
 .result {
-    background: #eef;
-    padding: 10px;
-    border-radius: 5px;
+  margin-top: 18px;
+  background: rgba(102,126,234,0.1);
+  padding: 14px;
+  border-radius: 10px;
+}
+ 
+.result div {
+  margin: 5px 0;
+}
+ 
+button {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -41,69 +102,58 @@ input, select, button {
 <body>
  
 <div class="container">
-<h1>Temperature Converter</h1>
+  <div class="header">
+    <h1>🌡️ Temperature Converter</h1>
+    <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
+  </div>
  
-<input type="number" id="temp" placeholder="Enter temperature">
+  <label>Enter value</label>
+  <input type="number" id="temp" oninput="convert()" placeholder="Enter temperature">
  
-<select id="unit">
+  <label>Select unit</label>
+  <select id="unit" onchange="convert()">
     <option value="c">Celsius (°C)</option>
     <option value="f">Fahrenheit (°F)</option>
     <option value="k">Kelvin (K)</option>
     <option value="r">Rankine (°R)</option>
-</select>
+  </select>
  
-<button onclick="convert()">Convert</button>
+  <div class="result" id="result">Start typing to see conversion</div>
  
-<div class="result" id="result"></div>
+  <button onclick="copyResult()">📋 Copy Result</button>
 </div>
  
 <script>
 function convert() {
-    let temp = document.getElementById("temp").value;
-    let unit = document.getElementById("unit").value;
+  let t = document.getElementById("temp").value;
+  let u = document.getElementById("unit").value;
+  if (t === "") return;
  
-    if (temp === "") {
-        document.getElementById("result").innerHTML = "Please enter a value";
-        return;
-    }
+  t = parseFloat(t);
+  let c,f,k,r;
  
-    temp = parseFloat(temp);
-    let c, f, k, r;
+  if(u==="c"){c=t;f=c*9/5+32;k=c+273.15;r=(c+273.15)*9/5;}
+  else if(u==="f"){f=t;c=(f-32)*5/9;k=c+273.15;r=f+459.67;}
+  else if(u==="k"){k=t;c=k-273.15;f=c*9/5+32;r=k*9/5;}
+  else {r=t;k=r*5/9;c=k-273.15;f=c*9/5+32;}
  
-    if (unit === "c") {
-        c = temp;
-        f = (c * 9/5) + 32;
-        k = c + 273.15;
-        r = (c + 273.15) * 9/5;
-    }
-    else if (unit === "f") {
-        c = (temp - 32) * 5/9;
-        f = temp;
-        k = c + 273.15;
-        r = (temp + 459.67);
-    }
-    else if (unit === "k") {
-        c = temp - 273.15;
-        f = (c * 9/5) + 32;
-        k = temp;
-        r = temp * 9/5;
-    }
-    else {
-        k = temp * 5/9;
-        c = k - 273.15;
-        f = (c * 9/5) + 32;
-        r = temp;
-    }
+  document.getElementById("result").innerHTML =
+    `Celsius: ${c.toFixed(2)} °C<br>
+     Fahrenheit: ${f.toFixed(2)} °F<br>
+     Kelvin: ${k.toFixed(2)} K<br>
+     Rankine: ${r.toFixed(2)} °R`;
+}
  
-    document.getElementById("result").innerHTML =
-        `Celsius: ${c.toFixed(2)} °C<br>
-         Fahrenheit: ${f.toFixed(2)} °F<br>
-         Kelvin: ${k.toFixed(2)} K<br>
-         Rankine: ${r.toFixed(2)} °R`;
+function copyResult() {
+  navigator.clipboard.writeText(document.getElementById("result").innerText);
+  alert("Copied!");
+}
+ 
+function toggleMode() {
+  document.body.classList.toggle("dark");
 }
 </script>
  
 </body>
 </html>
-
  
