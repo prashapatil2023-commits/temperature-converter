@@ -2,135 +2,75 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Engineering Tools | Converters & Calculators</title>
  
-<!-- Google verification -->
-<meta name="google-site-verification" content="zpVgqeCM7_ZF2J2fDcVkGCVUsicPaSboEPQuFfxuM6A" />
- 
-<title>Temperature Converter | Celsius, Fahrenheit, Kelvin, Rankine</title>
-<meta name="description" content="Instant temperature converter with auto convert, per-value copy, dark mode.">
+<meta name="description" content="Free online engineering tools including temperature converter, capacitor converter and more.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <style>
-:root {
-  --bg: #f4f6ff;
-  --card: #ffffff;
-  --text: #000;
-  --accent: #667eea;
-  --rowHover: rgba(102,126,234,0.12);
-}
- 
-body.dark {
-  --bg: #121212;
-  --card: #1e1e1e;
-  --text: #ffffff;
-  --rowHover: rgba(255,255,255,0.12);
-}
- 
 body {
   margin: 0;
   min-height: 100vh;
   font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: linear-gradient(135deg, #667eea, #764ba2);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
  
 .container {
-  background: var(--card);
+  background: #ffffff;
   width: 100%;
-  max-width: 420px;
-  padding: 24px;
-  border-radius: 18px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-}
- 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  text-align: center;
 }
  
 h1 {
-  font-size: 20px;
-  margin: 0;
+  margin-top: 0;
+  font-size: 26px;
 }
  
-.toggle {
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--accent);
+p {
+  color: #555;
+  margin-bottom: 30px;
 }
  
-label {
-  display: block;
-  margin-top: 16px;
-  font-weight: 600;
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
  
-input, select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 6px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
- 
-.result {
-  margin-top: 18px;
-  background: rgba(102,126,234,0.08);
-  padding: 14px;
+.card {
+  background: #f4f6ff;
+  padding: 20px;
   border-radius: 14px;
+  text-decoration: none;
+  color: #000;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
  
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 10px;
-  transition: background 0.2s;
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
 }
  
-.row:hover {
-  background: var(--rowHover);
+.card h2 {
+  margin: 0;
+  font-size: 20px;
 }
  
-.value {
-  cursor: pointer;
+.card span {
+  font-size: 40px;
 }
  
-.copy-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 15px;
-  opacity: 0.4;
-}
- 
-.row:hover .copy-btn {
-  opacity: 1;
-}
- 
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #4caf50;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
+.footer {
+  margin-top: 25px;
   font-size: 13px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-.toast.show {
-  opacity: 1;
+  color: #777;
 }
 </style>
 </head>
@@ -138,79 +78,27 @@ input, select {
 <body>
  
 <div class="container">
-  <div class="header">
-    <h1>🌡️ Temperature Converter</h1>
-    <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
+  <h1>🛠️ Engineering Tools</h1>
+  <p>Simple, fast and accurate converters for engineers & students</p>
+ 
+  <div class="cards">
+    <a class="card" href="./temperature/">
+      <span>🌡️</span>
+      <h2>Temperature Converter</h2>
+      <p>Celsius, Fahrenheit, Kelvin, Rankine</p>
+    </a>
+ 
+    <a class="card" href="./electronics/">
+      <span>⚡</span>
+      <h2>Capacitor Converter</h2>
+      <p>F, mF, µF, nF, pF</p>
+    </a>
   </div>
  
-  <label>Enter value</label>
-  <input type="number" id="temp" placeholder="Enter temperature" oninput="convert()">
- 
-  <label>Select unit</label>
-  <select id="unit" onchange="convert()">
-    <option value="c">Celsius (°C)</option>
-    <option value="f">Fahrenheit (°F)</option>
-    <option value="k">Kelvin (K)</option>
-    <option value="r">Rankine (°R)</option>
-  </select>
- 
-  <div class="result" id="result">
-    Start typing to see conversion
+  <div class="footer">
+    Built by Prashant • Free online engineering tools
   </div>
 </div>
- 
-<div class="toast" id="toast">Copied</div>
- 
-<script>
-function convert() {
-  let t = document.getElementById("temp").value;
-  let u = document.getElementById("unit").value;
- 
-  if (t === "") {
-    document.getElementById("result").innerHTML = "Start typing to see conversion";
-    return;
-  }
- 
-  t = parseFloat(t);
-  let c,f,k,r;
- 
-  if(u==="c"){c=t;f=c*9/5+32;k=c+273.15;r=(c+273.15)*9/5;}
-  else if(u==="f"){f=t;c=(f-32)*5/9;k=c+273.15;r=f+459.67;}
-  else if(u==="k"){k=t;c=k-273.15;f=c*9/5+32;r=k*9/5;}
-  else {r=t;k=r*5/9;c=k-273.15;f=c*9/5+32;}
- 
-  document.getElementById("result").innerHTML = `
-    ${row("Celsius", c.toFixed(2)+" °C")}
-    ${row("Fahrenheit", f.toFixed(2)+" °F")}
-    ${row("Kelvin", k.toFixed(2)+" K")}
-    ${row("Rankine", r.toFixed(2)+" °R")}
-  `;
-}
- 
-function row(label, value) {
-  return `
-  <div class="row">
-    <div class="value" onclick="copyValue('${value}', this)">${label}: <b>${value}</b></div>
-    <button class="copy-btn" onclick="copyValue('${value}', this.parentElement)">📋</button>
-  </div>`;
-}
- 
-function copyValue(text, rowEl) {
-  navigator.clipboard.writeText(text);
- 
-  rowEl.style.background = "var(--rowHover)";
-  setTimeout(()=>rowEl.style.background="",600);
- 
-  let toast = document.getElementById("toast");
-  toast.innerText = text + " copied";
-  toast.classList.add("show");
-  setTimeout(()=>toast.classList.remove("show"),1200);
-}
- 
-function toggleMode() {
-  document.body.classList.toggle("dark");
-}
-</script>
  
 </body>
 </html>
