@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+ 
+<title>Capacitor Converter | F, mF, µF, nF, pF</title>
+<meta name="description" content="Capacitor converter for Farad, millifarad, microfarad, nanofarad and picofarad with per-value copy.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<style>
+:root {
+  --bg: #f4f6ff;
+  --card: #ffffff;
+  --text: #000;
+  --accent: #667eea;
+  --rowHover: rgba(102,126,234,0.12);
+}
+ 
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #ffffff;
+  --rowHover: rgba(255,255,255,0.12);
+}
+ 
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.container {
+  background: var(--card);
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+ 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
+h1 {
+  font-size: 20px;
+  margin: 0;
+}
+ 
+.toggle {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--accent);
+}
+ 
+label {
+  display: block;
+  margin-top: 16px;
+  font-weight: 600;
+}
+ 
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+ 
+.result {
+  margin-top: 18px;
+  background: rgba(102,126,234,0.08);
+  padding: 14px;
+  border-radius: 14px;
+}
+ 
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+ 
+.row:hover {
+  background: var(--rowHover);
+}
+ 
+.value {
+  cursor: pointer;
+}
+ 
+.copy-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  opacity: 0.4;
+}
+ 
+.row:hover .copy-btn {
+  opacity: 1;
+}
+ 
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.toast.show {
+  opacity: 1;
+}
+</style>
+</head>
+ 
+<body>
+ 
+<div class="container">
+  <div class="header">
+    <h1>⚡ Capacitor Converter</h1>
+    <div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
+  </div>
+ 
+  <label>Enter value</label>
+  <input type="number" id="cap" placeholder="Enter capacitor value" oninput="convert()">
+ 
+  <label>Select unit</label>
+  <select id="unit" onchange="convert()">
+    <option value="f">Farad (F)</option>
+    <option value="mf">Millifarad (mF)</option>
+    <option value="uf">Microfarad (µF)</option>
+    <option value="nf">Nanofarad (nF)</option>
+    <option value="pf">Picofarad (pF)</option>
+  </select>
+ 
+  <div class="result" id="result">
+    Start typing to see conversion
+  </div>
+</div>
+ 
+<div class="toast" id="toast">Copied</div>
+ 
+<script>
+function convert() {
+  let v = document.getElementById("cap").value;
+  let u = document.getElementById("unit").value;
+ 
+  if (v === "") {
+    document.getElementById("result").innerHTML = "Start typing to see conversion";
+    return;
+  }
+ 
+  v = parseFloat(v);
+ 
+  /* Convert input to FARAD (base unit) */
+  let F;
+  if (u === "f") F = v;
+  else if (u === "mf") F = v * 1e-3;
+  else if (u === "uf") F = v * 1e-6;
+  else if (u === "nf") F = v * 1e-9;
+  else F = v * 1e-12;
+ 
+  /* Convert from Farad to all units */
+  let f  = F;
+  let mf = F * 1e3;
+  let uf = F * 1e6;
+  let nf = F * 1e9;
+  let pf = F * 1e12;
+ 
+  document.getElementById("result").innerHTML = `
+    ${row("Farad", format(f) + " F")}
+    ${row("Millifarad", format(mf) + " mF")}
+    ${row("Microfarad", format(uf) + " µF")}
+    ${row("Nanofarad", format(nf) + " nF")}
+    ${row("Picofarad", format(pf) + " pF")}
+  `;
+}
+ 
+function format(val) {
+  return Number(val).toLocaleString(undefined, {
+    maximumFractionDigits: 9
+  });
+}
+ 
+function row(label, value) {
+  return `
+  <div class="row">
+    <div class="value" onclick="copyValue('${value}', this)">${label}: <b>${value}</b></div>
+    <button class="copy-btn" onclick="copyValue('${value}', this.parentElement)">📋</button>
+  </div>`;
+}
+ 
+function copyValue(text, rowEl) {
+  navigator.clipboard.writeText(text);
+ 
+  rowEl.style.background = "var(--rowHover)";
+  setTimeout(()=>rowEl.style.background="",600);
+ 
+  let toast = document.getElementById("toast");
+  toast.innerText = text + " copied";
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),1200);
+}
+ 
+function toggleMode() {
+  document.body.classList.toggle("dark");
+}
+</script>
+ 
+</body>
+</html>
+Top 10 nhà cái uy tín Việt Nam - Đăng ký chính chủ +100K
+Top 10 nhà cái uy tín nhất tại Việt Nam: Vsbet, 6686, FB88, 188bet, fun88, w88, hi88, bk8, thabet, 1xbet, go88... Tham gia nhà cái tặng tiền thưởng 100K đăng.
+ 
